@@ -5,13 +5,13 @@ function prod (...nums){
   if(nums.length === 0){
     return undefined;
   }
-  let result = nums.reduce(function(a,b){
+  const result = nums.reduce(function(a,b){
     return a+b;
   },0);
   return result;
 }
 function any (arr, fn){
-  let filtered = arr.filter(fn);
+  const filtered = arr.filter(fn);
   if(filtered.length > 0){
     return true;
   }else{
@@ -20,8 +20,8 @@ function any (arr, fn){
 }
 function maybe (fn){
   return function(...args){
-    let result = args.filter((x) => {
-      return (x === undefined || x === null)
+    const result = args.filter((x) => {
+      return (x === undefined || x === null);
     });
 
     if(result.length === 0){
@@ -29,17 +29,19 @@ function maybe (fn){
     }else{
       return undefined;
     }
-  }
+  };
 }
 function constrainDecorator (fn, min, max){
   return function(...args){
-    let result = fn(...args);
+    const result = fn(...args);
     if(result < min){
       return min;
     }else if(result > max){
       return max;
-    }else return result;
-  }
+    }else {
+      return result;
+    }
+  };
 }
 function limitCallsDecorator(fn, n){
   let counter = 0;
@@ -50,39 +52,52 @@ function limitCallsDecorator(fn, n){
     }else{
       return fn(...args);
     }
-  }
+  };
 }
 function mapWith(fn){
   return function (...args){
     return args[0].map(fn);
-  }
+  };
 }
 function simpleINIParse(s){
-  let obj = {};
-  let allArr = s.split("\n");
+  const obj = {};
+  const allArr = s.split("\n");
   //console.log(allArr);
-  let result = allArr.map(function(x){
-      let propertyName, proerty;
+  allArr.map(function(x){
       // console.log(x);
       // console.log(x.split("=").length);
       // console.log(x.length + "\n");
       if(x.split("=") !== x){
-        let elementsArr = x.split("=");
+        const elementsArr = x.split("=");
         // console.log(elementsArr[0] !== undefined);
         // console.log(elementsArr[1] !== undefined);
         if(elementsArr[0] !== undefined && elementsArr[1] !== undefined){
-          let propertyName = elementsArr[0];
-          //console.log(propertyName);
-          let property = elementsArr[1];
+          const propertyName = elementsArr[0];
+
+          const property = elementsArr[1];
+          //console.log(property);
+          //let arr = JSON.parse(property);
+          //console.log(arr);
+
           obj[propertyName] = property;
+
         }
       }
   });
   return obj;
 }
 function readFileWith(fn){
-
+  return function(fileName,cBack ){
+    fs.readFile(fileName, 'utf8', function(err,data){
+      if(err){
+        cBack({},undefined);
+      }else{
+        cBack(err,fn(data));
+      }
+    });
+  };
 }
+
 
 module.exports = {
   prod: prod,
@@ -93,4 +108,4 @@ module.exports = {
   mapWith: mapWith,
   simpleINIParse: simpleINIParse,
   readFileWith: readFileWith
-}
+};
